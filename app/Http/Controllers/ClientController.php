@@ -7,6 +7,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use NettworkProject\Http\Requests;
 use NettworkProject\Repositories\ClientRepository;
+use NettworkProject\Services\ClientService;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 class ClientController extends Controller
 {
@@ -19,13 +21,20 @@ class ClientController extends Controller
     private $repository;
 
     /**
+     * @var ClientService
+     */
+    private $service;
+
+    /**
      * ClientController constructor.
      * @param ClientRepository $repository
+     * @param ClientService $service
      */
 
-    public function __construct(ClientRepository $repository)
+    public function __construct(ClientRepository $repository, ClientService $service)
     {
         $this->repository = $repository;
+        $this->service = $service;
     }
 
     /**
@@ -45,7 +54,7 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
-        return $this->repository->create($request->all());
+        return $this->service->create($request->all());
     }
 
     /**
@@ -69,10 +78,10 @@ class ClientController extends Controller
     public function update(Request $request,$id)
     {
         try{
-            $this->repository->find($id)->update($request->all());
+            $this->service->update($request->all(), $id);
             return response()->json(['success'=>'Usuario atualizado com sucesso!']);
         }
-        catch(ModelNotFoundException $e){
+        catch(InvalidParameterException $e){
             return ['error'=>'Cliente não encontrado.'];
         }
     }
@@ -89,7 +98,7 @@ class ClientController extends Controller
             $this->repository->find($id)->delete();
             return response()->json(['success'=>'Usuario excluido com sucesso!']);
         }
-        catch(ModelNotFoundException $e){
+        catch(InvalidParameterException $e){
             return ['error'=>'Cliente não encontrado.'];
         }
     }

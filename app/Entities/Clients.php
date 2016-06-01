@@ -14,4 +14,12 @@ class Clients extends Model
         'address',
         'obs'
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function projects()
+    {
+        return $this->hasMany(Projects::class);
+    }
 }
