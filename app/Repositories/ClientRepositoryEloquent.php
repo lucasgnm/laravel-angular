@@ -7,7 +7,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use NettworkProject\Repositories\ClientRepository;
 use NettworkProject\Entities\Client;
-//use NettworkProject\Validators\ClientValidator;
+use NettworkProject\Validators\ClientValidator;
 
 /**
  * Class ClientRepositoryEloquent
@@ -25,8 +25,6 @@ class ClientRepositoryEloquent extends BaseRepository implements ClientRepositor
     {
         return Clients::class;
     }
-
-    
 
     /**
      * Boot up the repository, pushing criteria
