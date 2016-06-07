@@ -74,7 +74,13 @@ class ProjectsController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->with(['owner','client'])->find($id);
+        try{
+            return $this->repository->with(['owner','client'])->find($id);
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'Projeto não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Ocorreu algum erro ao localizar o projeto.'];
+        }
     }
 
     /**
@@ -87,13 +93,13 @@ class ProjectsController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        try{
+        try {
             $this->service->update($request->all(), $id);
-            return response()->json(['success'=>'Projeto atualizado com sucesso!']);
-        }
-        catch(InvalidParameterException $e){
-            return ['error'=>'Projeto não encontrado.'];
+            return response()->json(['success'=> true,'Projeto atualizado com sucesso!']);
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'Projeto não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Ocorreu algum erro ao atualizar o projeto.'];
         }
 
     }
@@ -111,9 +117,10 @@ class ProjectsController extends Controller
         try{
             $this->repository->find($id)->delete();
             return response()->json(['success'=>'Projeto excluido com sucesso!']);
-        }
-        catch(InvalidParameterException $e){
-            return ['error'=>'Projeto não encontrado.'];
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'Projeto não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Ocorreu algum erro ao excluir o projeto.'];
         }
     }
 }

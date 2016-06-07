@@ -62,10 +62,8 @@ class ClientService
     public function update(array $data, $id)
     {
         try {
-
             $this->validator->with($data)->passesOrFail();
-            return $this->repository->update($data, $id);
-
+            return $this->repository->find($id)->update($data);
         } catch (ValidatorException $e) {
 
             return [

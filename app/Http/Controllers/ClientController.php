@@ -65,7 +65,14 @@ class ClientController extends Controller
 
     public function show($id)
     {
-        return $this->repository->find($id);
+        try{
+            return $this->repository->find($id);
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'Cliente não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Ocorreu algum erro ao localizar o cliente.'];
+        }
+
     }
 
     /**
@@ -79,10 +86,13 @@ class ClientController extends Controller
     {
         try{
             $this->service->update($request->all(), $id);
-            return response()->json(['success'=>'Usuario atualizado com sucesso!']);
-        }
-        catch(InvalidParameterException $e){
-            return ['error'=>'Cliente não encontrado.'];
+            return response()->json(['success'=> true, 'Usuario atualizado com sucesso!']);
+        } catch (QueryException $e) {
+            return ['error'=>true, 'Cliente não pode ser atualizado.'];
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'Cliente não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Ocorreu algum erro ao atualizar o cliente.'];
         }
     }
 
@@ -96,10 +106,13 @@ class ClientController extends Controller
     {
         try{
             $this->repository->find($id)->delete();
-            return response()->json(['success'=>'Usuario excluido com sucesso!']);
-        }
-        catch(InvalidParameterException $e){
-            return ['error'=>'Cliente não encontrado.'];
+            return response()->json(['success'=>true, 'Usuario excluido com sucesso!']);
+        } catch (QueryException $e) {
+            return ['error'=>true, 'Cliente não pode ser excluido devido ter relações com um ou mais projetos.'];
+        } catch (ModelNotFoundException $e) {
+            return ['error'=>true, 'Cliente não encontrado.'];
+        } catch (\Exception $e) {
+            return ['error'=>true, 'Ocorreu algum erro ao excluir o cliente.'];
         }
     }
 }
